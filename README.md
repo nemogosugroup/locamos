@@ -7,6 +7,7 @@
 # run
 - php artisan migrate
 - php artisan db:seed
+- php artisan vendor:publish --tag=translatable
 - npm run watch
 - npm run dev
 - npm run prod
