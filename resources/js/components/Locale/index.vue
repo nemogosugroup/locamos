@@ -2,7 +2,7 @@
     <el-dropdown class="locale-item hover-effect"
                 trigger="click" @command="handleChangeLocale">
         <span class="el-dropdown-link">
-        {{ this.locale.name }}
+        {{ this.locale }}
         <el-icon class="el-icon--right">
             <arrow-down />
         </el-icon>
@@ -20,32 +20,32 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import Helpers from '@/helper';
 import { setLocale } from "@/utils/auth"; // get lang
 export default {
     name: 'Locale',
     data() {
         return {
-            languages : Helpers.languages()
+            languages : Helpers.languages(),
+            locale: this.$i18n.locale
         }
-    },
-    computed: {
-        ...mapGetters(["locale"]),
     },
     watch: {
     },
     created() {
     },
     mounted() {
-        console.log(this.locale.name);
+        //console.log(this.locale.name);
     },
     methods: {
         handleChangeLocale(command){
-            this.$i18n.locale = command;
-            setLocale(command)            
-            this.$store.dispatch("locale/changeLocale", command)
-            //this.$router.go()
+            if (this.$i18n.locale != command) {
+                this.$i18n.locale = command;
+                this.locale = command;
+                setLocale(command)            
+                this.$store.dispatch("locale/changeLocale", command);
+                this.emitter.emit("change-locale", command);
+            }            
         },
     }
 }

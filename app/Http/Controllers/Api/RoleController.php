@@ -26,7 +26,7 @@ class RoleController extends Controller
             $result = array(
                 array('key' => Acl::ROLE_USER, 'name' => 'User'),
                 array('key' => Acl::ROLE_ADMIN, 'name' => 'Administrator'),
-                array('key' => Acl::ROLE_SUPER_ADMIN, 'name' => 'Super Administrator'),
+                array('key' => Acl::ROLE_MANAGER, 'name' => 'Super Administrator'),
             );
             $results = array(
                 'message' => $this->msg->getSuccess(),

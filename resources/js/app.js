@@ -19,10 +19,11 @@ let locale = store.getters.locale
 // messages
 import messages from '@/i18n/index.js';
 import { getLocale } from "@/utils/auth"; // get lang
+
 const lang = getLocale() ?? 'vi';
 const i18n = createI18n({
   locale: lang,
-  fallbackLocale: 'en',
+  fallbackLocale: 'vi',
   messages:messages,
 });
 const app = createApp(App);

@@ -1,12 +1,12 @@
 //import RepositoryFactory from "@/utils/RepositoryFactory";
-import {getAccessToken, setAccessToken, removeToken, setAuth, getAuth, removeAuth} from '@/utils/auth'
+import {getAccessToken, setAccessToken, removeToken, setAuth, getAuth, setLocale, getLocale} from '@/utils/auth'
 import router, { resetRouter } from "@/router";
 import cnLang from 'element-plus/es/locale/lang/zh-cn'
 import viLang from 'element-plus/es/locale/lang/vi'
 import enLang from 'element-plus/es/locale/lang/en'
 //const langRepository = RepositoryFactory.get('lang');
 const state = {
-    locale: enLang,
+    locale: viLang ,
 };
 
 const mutations = {
@@ -29,6 +29,7 @@ const actions = {
                 language = viLang;
         }
         commit('SET_LOCALE', language);
+        setLocale(language.name);
         // return new Promise((resolve, reject) => {
         //     langRepository.change(state.token)
         //         .then((response) => {
