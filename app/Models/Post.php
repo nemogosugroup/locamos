@@ -22,6 +22,7 @@ class Post extends Model
         'feature_image',
         'images',
     ];
+
     protected static function boot() {
         parent::boot();
         static::creating(function ($post) {
@@ -33,5 +34,10 @@ class Post extends Model
     public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo('App\Models\Category');
+    }
+
+    public function getImagesAttribute(): ?array
+    {
+        return $this->attributes['images'] ? json_decode($this->attributes['images'], true) : [];
     }
 }
