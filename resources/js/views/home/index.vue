@@ -3,9 +3,9 @@
         <el-col :span="8">
             <div class="homeListMap">
                 <div class="search">
-                    <el-input v-model="input1" size="large" :placeholder="$t('search')">
+                    <el-input v-model="listQuery.title" size="large" :placeholder="$t('search')">
                         <template #append>
-                            <el-button><i class="ri-search-line"></i></el-button>
+                            <el-button @click="handleSearch()"><i class="ri-search-line"></i></el-button>
                         </template>
                     </el-input>
                 </div>
@@ -13,7 +13,7 @@
                     <el-scrollbar wrap-class="scrollbar-wrapper" height="calc(100vh - 225px)">
                         <div v-for="item in listData" :key="item.id" class="card">
                             <div class="images">
-                                <img :src="item.images" :alt="item.title" />
+                                <img :src="item.feature_image" :alt="item.title" />
                             </div>
 
                             <div class="info">
@@ -22,14 +22,14 @@
                                 <p>Latitude: {{ item.lat }}</p>
                                 <p>Longitude: {{ item.long }}</p>
                                 <div class="d-flex">
-                                    <el-button @click="hanldeMarker()" type="primary" plain><i
+                                    <el-button @click="hanldeMarker(item.id)" type="primary" plain><i
                                             class="ri-send-plane-fill"></i></el-button>
                                     <el-button class="button-more"><a href="#">{{ $t('readmore') }}</a></el-button>
                                 </div>
                             </div>
                         </div>
                     </el-scrollbar>
-                    <pagination v-show="total > 10" v-bind:total="total" v-model:page="listQuery.page"
+                    <pagination v-show="total > 20" v-bind:total="total" v-model:page="listQuery.page"
                         v-model:limit="listQuery.limit" layout="prev, pager, next" @pagination="fetch" />
                 </div>
             </div>
@@ -41,28 +41,99 @@
 
 </template>
 <script>
+//import { mapGetters } from "vuex";
 import { dataDemo } from "./datademo";
 import Pagination from '@/components/Pagination'
+import RepositoryFactory from '@/utils/RepositoryFactory';
+const mapRepository = RepositoryFactory.get('map');
+import { ElLoading } from 'element-plus'
 export default {
     components: { Pagination },
     data() {
         return {
             listData: dataDemo(),
+            listAlls: [],
             total: 30,
             listQuery: {
                 page: 1,
-                limit: 10,
+                limit: 20,
+                sort: 'desc',
+                title: '',
+                locale: this.$i18n.locale
             },
+            listQueryAll: {
+                sort: 'desc',
+                title: '',
+                locale: this.$i18n.locale
+            },
+            total: 0,
             markers: [],
             map: null,
             infowindow: null,
+            isLoading: true,
         }
     },
+    computed: {
+        //...mapGetters(["locale"]),
+    },
     mounted() {
-        this.initMap();
+        //this.initMap();
+        this.emitter.on("change-locale", data => {
+            this.markers = [],
+                this.map = null,
+                this.infowindow = null,
+                this.listQuery = {
+                    page: 1,
+                    limit: 20,
+                    sort: 'desc',
+                    title: '',
+                    locale: this.$i18n.locale
+                },
+                this.fetch();
+            Promise.resolve(this.fetchAll()).then(() => {
+                //this.initMap();
+            }).catch(error => {
+                console.error('Error fetching all data:', error);
+            });
+        });
+    },
+    created() {
+        this.emitter.off("change-locale");
+        this.fetch();
+        Promise.resolve(this.fetchAll()).then(() => {
+            this.initMap();
+        }).catch(error => {
+            console.error('Error fetching all data:', error);
+        });
     },
 
     methods: {
+        async fetch() {
+            const loading = ElLoading.service({
+                lock: true,
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+            this.listQuery.locale = this.$i18n.locale;
+            const { data } = await mapRepository.list(this.listQuery);
+            loading.close();
+            if (data.success) {
+                const results = data.data.data;
+                this.listData = results.map(item => {
+                    return item
+                });
+                this.total = data.data.total;
+            }
+        },
+        async fetchAll() {
+            this.listQueryAll.locale = this.$i18n.locale;
+            const { data } = await mapRepository.all(this.listQueryAll);
+            if (data.success) {
+                const results = data.data;
+                this.listAlls = results.map(item => {
+                    return item
+                });
+            }
+        },
         excerpt(desc, number) {
             if (desc && desc.length > 0) {
                 desc = desc.split(' ');
@@ -74,24 +145,18 @@ export default {
             }
             return desc;
         },
-        fetch() {
-
-        },
         // google maker crui
         initMap() {
             /**
              * Create new map
              */
-
-            //var infowindow;
+            var locations = this.listAlls.map(item => {
+                return item
+            });
             var map;
-            this.infowindow = new google.maps.InfoWindow();            
+            this.infowindow = new google.maps.InfoWindow();
             var red_icon = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
-            var self = this;
 
-            var locations = [
-                ["name0", -31.56391, 147.154312], ["name1", -33.718234, 150.363181], ["name2", -33.727111, 150.371124], ["name3", -33.848588, 151.209834], ["name4", -33.851702, 151.216968], ["name5", -34.671264, 150.863657], ["name6", -35.304724, 148.662905], ["name7", -36.817685, 175.699196], ["name8", -36.828611, 175.790222], ["name9", -37.75, 145.116667], ["name10", -37.759859, 145.128708], ["name11", -37.765015, 145.133858], ["name12", -37.770104, 145.143299], ["name13", -37.7737, 145.145187], ["name14", -37.774785, 145.137978], ["name15", -37.819616, 144.968119], ["name16", -38.330766, 144.695692], ["name17", -39.927193, 175.053218], ["name18", -41.330162, 174.865694], ["name19", -42.734358, 147.439506], ["name20", -42.734358, 147.501315], ["name21", -42.735258, 147.438], ["name22", -43.999792, 170.463352]
-            ]
             var myOptions = {
                 // zoom: 10,
                 center: new google.maps.LatLng(31.87916, 35.32910),
@@ -104,107 +169,66 @@ export default {
              * Global marker object that holds all markers.
              * @type {Object.<string, google.maps.LatLng>}
              */
-            // var markers = [];
-            //var seft = this.markers;
-            /**
-             * Concatenates given lat and lng with an underscore and returns it.
-             * This id will be used as a key of marker to cache the marker in markers object.
-             * @param {!number} lat Latitude.
-             * @param {!number} lng Longitude.
-             * @return {string} Concatenated marker id.
-             */
-            var getMarkerUniqueId = function (lat, lng) {
-                return lat + '_' + lng;
-            };
-
-            /**
-             * Creates an instance of google.maps.LatLng by given lat and lng values and returns it.
-             * This function can be useful for getting new coordinates quickly.
-             * @param {!number} lat Latitude.
-             * @param {!number} lng Longitude.
-             * @return {google.maps.LatLng} An instance of google.maps.LatLng object
-             */
-            var getLatLng = function (lat, lng) {
-                return new google.maps.LatLng(lat, lng);
-            };
-
-
-            /**
-             * Binds right click event to given marker and invokes a callback function that will remove the marker from map.
-             * @param {!google.maps.Marker} marker A google.maps.Marker instance that the handler will binded.
-             */
-            var bindMarkerEvents = function (marker) {
-                google.maps.event.addListener(marker, "rightclick", function (point) {
-                    var markerId = getMarkerUniqueId(point.latLng.lat(), point.latLng.lng()); // get marker id by using clicked point's coordinate
-                    var marker = this.markers[markerId]; // find marker
-                    removeMarker(marker, markerId); // remove it
-                });
-            };
-
+            var markers = [];
 
             /**
              * loop through (Mysql) dynamic locations to add markers to map.
              */
             var i;
-            var confirmed = 0;
             var bounds = new google.maps.LatLngBounds();
 
             for (i = 0; i < locations.length; i++) {
                 var marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+                    //position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+                    position: new google.maps.LatLng(locations[i]['lat'], locations[i]['long']),
                     map: map,
                     // icon: locations[i][4] === '1' ? red_icon : purple_icon,
-                    html: "<div id='window_loc'>\n" +
-                        "<form method='GET' action='question.php'>\n" +
-                        "<table class=\"map1\">\n" +
-                        "<tr>\n" +
-                        "<td><input type='hidden'  id='manual_description'/>" + locations[i][3] + "</td></tr>\n" +
-                        "<tr>\n" +
-                        "<td><textarea disabled  id='question' placeholder='Question'>" + locations[i][5] + "</textarea></td></tr>\n" +
-                        "<tr>\n" +
-                        "<td><input type='hidden' name='location_id' id='location_id' value=" + locations[i][0] + " /></td></tr>\n" +
-                        "<td><input id='button1' name='play' type='submit' value='play'/> </td></tr>\n" +
-                        "</table>\n" +
-                        "</form>\n" +
-                        "</div>"
+                    html: `<div class='locale' id='window_loc'>
+                            <div class='images'>
+                                <img src="${locations[i]['feature_image']}" alt="${locations[i]['title']}">
+                            </div>
+                            <div class='info-locale'>
+                                <h5>${locations[i]['title']}</h5>
+                                <p class="name"><strong>${this.$i18n.t('manager')}: </strong>${locations[i]['manager']}</p>
+                                <p>Latitude: ${locations[i]['lat']}</p>
+                                <p>Longitude: ${locations[i]['long']}</p>
+                                <div class="d-flex">
+                                    <el-button class="button-more"><a href="#">${this.$i18n.t('readmore')}</a></el-button>
+                                </div>
+                            </div>
+                        </div>`
                 });
                 bounds.extend(marker.getPosition());
 
                 google.maps.event.addListener(marker, 'click', (function (marker, i) {
-                    //console.log('map', map)
-                    //map.panTo(marker.getPosition());
                     return function () {
                         if (this.infowindow) {
                             this.infowindow.close();
                         }
-                        confirmed = locations[i][4] === '1' ? 'checked' : 0;
-                        $("#confirmed").prop(confirmed, locations[i][4]);
-                        $("#location_id").val(locations[i][0]);
-                        $("#description").val(locations[i][3]);
-                        $("#form").show();
                         this.infowindow = new google.maps.InfoWindow();
                         this.infowindow.setContent(marker.html);
                         this.infowindow.open(map, marker)
                     }
                 })(marker, i));
-                this.markers.push(marker);
+                markers.push(marker);
             }
             map.fitBounds(bounds);
             // Add a marker clusterer to manage the markers.
-            new MarkerClusterer(map, this.markers, {
+            new MarkerClusterer(map, markers, {
                 imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m",
             });
-            this.map = map
+            this.map = map;
+            this.markers = markers;
         },
-        hanldeMarker(){
-            let markerIndex = 17; // Chỉ số của marker bạn muốn pan đến
+        hanldeMarker(id) {
+            let markerIndex = this.listAlls.findIndex(item => item.id === id);// Chỉ số của marker bạn muốn pan đến;
             let marker = this.markers[markerIndex];
             if (marker) {
                 let markerPosition = marker.getPosition();
                 if (markerPosition) {
-                    google.maps.event.trigger(this.markers[17], 'click');
+                    google.maps.event.trigger(this.markers[markerIndex], 'click');
                     this.map.panTo(markerPosition);
-                    this.map.setZoom(9);
+                    this.map.setZoom(17);
                 } else {
                     console.error("Vị trí của marker không tồn tại.");
                 }
@@ -212,16 +236,38 @@ export default {
                 console.error("Marker không tồn tại.");
             }
         },
+        //search
+        handleSearch(data) {
+            this.listQuery.page = 1;
+            this.listQuery.limit = 20;
+            this.fetch();
+        },
     },
 }
 </script>
 
+<style lang="scss">
+.locale {
+    img {
+        width: 220px;
+        height: 150px;
+        object-fit: cover;
+    }
+
+    .info-locale {
+        h5 {
+            text-transform: capitalize;
+        }
+    }
+}
+</style>
 
 <style lang="scss" scoped>
 @import "~@style/variables.scss";
 
 #map {
     height: 100%;
+
 }
 
 

@@ -1,18 +1,14 @@
 import UserRepository from '@/api/user/index';
 import RoleRepository from '@/api/role';
 import ProjectRepository from '@/api/project';
-import MarketRepository from '@/api/market';
-import QuestRepository from '@/api/quest';
-import userEquipmentRepository from '@/api/equipment/index';
 import langRepository from '@/api/lang/index';
+import mapRepository from '@/api/map/index';
 const repositories = {
 	user: UserRepository,
 	role: RoleRepository,
 	project: ProjectRepository,
-	market: MarketRepository,
-	quest: QuestRepository,
-	userEquipment: userEquipmentRepository,
 	lang: langRepository,
+	map: mapRepository,
 }
 const RepositoryFactory = {
 	get: name => repositories[name]
