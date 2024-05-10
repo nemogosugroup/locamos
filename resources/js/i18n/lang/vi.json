@@ -1,5 +1,17 @@
 {
    "table.image" : "Hình ảnh",
    "table.title" : "Tiêu đề",
-   "title" : "Tiêu đề"
+   "footer.title" : "Công Ty Cổ Phần Trực Tuyến GOSU",
+   "footer.address" : "Tầng 3 tòa nhà HH2 Bắc Hà, Số 15 Đường Tố Hữu, Phường Nhân Chính, Quận Thanh Xuân, TP. Hà Nội, Việt Nam.",
+   "footer.phone" : "Số điện thoại: 0246 686 0058",
+   "footer.namecontent" : "Người chịu trách nhiệm nội dung: Ông Trần Trọng Kiên",
+   "footer.email" : "info@gosu.vn",
+   "footer.hotline" : "Hotline",
+   "footer.phonehotline" : "1900.7189",
+   "footer.registerno" : "GPKD: 0105992753",
+   "home.title" : "Trang chủ",
+   "readmore" : "Xem chi tiết",
+   "title" : "Tiêu đề",
+   "search" : "Tìm kiếm địa điểm",
+   "manager" : "Chủ sở hữu"
 }

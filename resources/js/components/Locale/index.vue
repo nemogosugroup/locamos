@@ -1,8 +1,8 @@
 <template>
-    <el-dropdown class="avatar-container right-menu-item hover-effect"
+    <el-dropdown class="locale-item hover-effect"
                 trigger="click" @command="handleChangeLocale">
         <span class="el-dropdown-link">
-        Lang
+        {{ this.locale.name }}
         <el-icon class="el-icon--right">
             <arrow-down />
         </el-icon>
@@ -37,6 +37,9 @@ export default {
     },
     created() {
     },
+    mounted() {
+        console.log(this.locale.name);
+    },
     methods: {
         handleChangeLocale(command){
             this.$i18n.locale = command;
@@ -47,4 +50,20 @@ export default {
     }
 }
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+    .locale-item {
+        margin: 0;
+        color: #fff;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: center;
+        align-content: stretch;
+        display: inline-flex;
+        padding: 0 8px;
+        height: 100%;
+        font-size: 18px;
+        text-transform: uppercase;
+        cursor: pointer;
+    }
+</style>

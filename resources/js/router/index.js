@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 /* Layout */
 import Login from "@/views/login";
 import Dashboard from "@/views/dashboard";
+import Home from "@/views/home";
 import Redirect from "@/views/redirect";
 import Page404 from "@/views/error-page/404";
 import Page401 from "@/views/error-page/401";
@@ -10,6 +11,7 @@ import ListProjects from "@/views/project/index";
 import CreateProject from "@/views/project/create";
 import EditProject from "@/views/project/edit";
 import Layout from "@/layout";
+import layoutFront from "@/views/layoutFront";
 // import Medal from '@/backend/views/medal'
 import { getAccessToken } from "@/utils/auth";
 // import CategoryMedal from '@/backend/views/medal/category'
@@ -55,6 +57,24 @@ export const constantRoutes = [
         path: "/401",
         component: Page401,
         hidden: true,
+    },
+    {
+        path: "/",
+        component: layoutFront,
+        hidden: true,
+        redirect: "/",
+        children: [
+            {
+                path: "/",
+                component: Home,
+                name: "Home",
+                meta: {
+                    title: "Gosu",
+                    icon: "ri-home-4-fill",
+                    affix: true,
+                },
+            },
+        ],
     },
     // {
     //     path: "/project",

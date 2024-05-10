@@ -11,6 +11,10 @@ $panGreen: #30B08F;
 $colorBlack: #101111;
 $lightGray: rgb(237, 236, 236);
 $lightBlack: rgb(0,0,0,.3);
+$primary: #fc6e08;
+$orange: #ed9534;
+$color-gray-5: #a9a9ba;
+$color-accent-5: #ed7361;
 // sidebar
 $menuText:#bfcbd9;
 $menuActiveText:#409EFF;
@@ -33,11 +37,14 @@ $size5: 5px;
 $size10: 10px;
 $size12: 12px;
 $size14: 14px;
+$size15: 15px;
 $size16: 16px;
 $size20: 20px;
 $size24: 24px;
+$size25: 25px;
 $size28: 28px;
 $size30: 30px;
+$size40: 40px;
 $size5:5px;
 $pd10: 10px;
 // the :export directive is the magic sauce for webpack

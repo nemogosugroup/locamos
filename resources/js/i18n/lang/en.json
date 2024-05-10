@@ -1,5 +1,17 @@
 {
     "table.image" : "Image",
     "table.title" : "Title",
-    "title" : "Title"
+    "footer.title" : "GOSU Online Corporation",
+    "footer.address" : "3rd Floor, HH2 Bac Ha Building, No.15 To Huu street, Nhan Chinh ward, Thanh Xuan District, Hanoi City, Vietnam.",
+    "footer.phone" : "Phone: +84 246 686 0058",
+    "footer.namecontent" : "Content PIC: Mr. Tran Trong Kien",
+    "footer.email" : "info@gosu.vn",
+    "footer.hotline" : "Hotline",
+    "footer.phonehotline" : "1900.7189",
+    "footer.registerno" : "Register No.: 0105992753",
+    "home.title" : "Home",
+    "readmore" : "Reamore",
+    "title" : "Title",
+    "search" : "Search address",
+    "manager" : "Manager"
 }
