@@ -2,9 +2,9 @@
 
 namespace App\Repositories\Backend;
 
+use App\Models\Post;
 use App\Repositories\Backend\Interfaces\BaseCategoryRepositoryInterface;
 use App\Repositories\BaseRepository;
-use App\Models\CategoryMission;
 use App\Models\Category;
 class BaseCategoryRepository extends BaseRepository implements BaseCategoryRepositoryInterface
 {
@@ -31,12 +31,11 @@ class BaseCategoryRepository extends BaseRepository implements BaseCategoryRepos
     {
         $models = $this->model;
         ## Search by title ##
-        // if ($params['title'] != null) {
-        //     //$models->where('title', 'Like', '%' . $params['title'] . '%');
-        //     $models->whereTranslationLike('title', '%' . $params['title'] . '%');
-        // }
-        //$data = $models->latest()->paginate($params['limit']);
-        $data = Category::translatedIn(app()->getLocale())->latest()->paginate($params['limit']);
+         if ($params['title'] != null) {
+             $models = Category::whereTranslationLike('title', '%' . $params['title'] . '%');
+         }
+        $data = $models->latest()->paginate($params['limit']);
+
         return $data->toArray();
     }
 
@@ -44,15 +43,23 @@ class BaseCategoryRepository extends BaseRepository implements BaseCategoryRepos
         return $this->modelTranslate->select('id', 'title')->get()->toArray();
     }
 
-    public function createTranslation(array $params, $category_id ){
-        //dd($this->modelTranslate);
-        $vi = $params['vi'];
-        $vi['category_id'] = $category_id;
-        $vi['locale'] = 'vi';
+    public function createTranslation(array $params, $category_id){
         $en = $params['en'];
         $en['category_id'] = $category_id;
         $en['locale'] = 'en';
-        return $this->modelTranslate->insert([$en, $vi]);
-        //return $this->modelTranslate->create($vi);
+        $en['created_at'] = now();
+        $en['updated_at'] = now();
+
+        return $this->modelTranslate->insert([$en]);
+    }
+
+    public function destroy(int $id)
+    {
+        $this->modelTranslate->query()
+            ->where('category_id', $id)
+            ->delete();
+        $this->model->query()
+            ->where('id', $id)
+            ->delete();
     }
 }

@@ -11,38 +11,40 @@
         v-bind:data="list"
     >    
         <!-- Check All -->
-        <el-table-column
-            type="selection"
-            width="40"
-            align="center">
-        </el-table-column>  
-        <el-table-column min-width="50px" :label="$t('table.image')">
-            <template v-slot="item">
-                <el-image style="width: 100px; height: 100px" :src="item.row.url_image" fit="cover" />
-            </template>
-        </el-table-column>          
-        <!-- tiêu đề -->
+<!--        <el-table-column-->
+<!--            type="selection"-->
+<!--            width="40"-->
+<!--            align="center">-->
+<!--        </el-table-column>  -->
         <el-table-column min-width="120px" label="Tiêu đề">
             <template v-slot="item">
-                <span>{{ item.row.title }}</span>
+                <div v-for="(lang, idx) in item.row.translations" :key="idx">
+                    <b>{{ lang.locale }} - </b><span>{{ lang.title }}</span><br>
+                </div>
             </template>
-        </el-table-column>     
+        </el-table-column>
         <!-- danh mục -->
         <el-table-column min-width="80px" label="Danh mục">
             <template v-slot="item">
                 <span>{{ item.row.category.title }}</span>
             </template>
         </el-table-column>
-        <!-- Mô tả -->
-        <el-table-column min-width="200px" label="Mô tả">
+        <!-- Người quản ly -->
+        <el-table-column min-width="100px" label="Người quản lý">
             <template v-slot="item">
-                <span>{{ item.row.excerpt }}</span>
+                <span>{{ item.row.manager }}</span>
             </template>
-        </el-table-column> 
-        <!-- Gold -->
-        <el-table-column min-width="80px" label="Gold">
+        </el-table-column>
+        <!-- Latitude -->
+        <el-table-column min-width="100px" label="Latitude">
             <template v-slot="item">
-                <span>{{ commasThousands(item.row.gold) }}</span>
+                <span>{{ item.row.lat }}</span>
+            </template>
+        </el-table-column>
+        <!-- Longitude -->
+        <el-table-column min-width="100px" label="Longitude">
+            <template v-slot="item">
+                <span>{{ item.row.long }}</span>
             </template>
         </el-table-column>
         <!-- Action -->

@@ -33,8 +33,6 @@ class CategoryController extends Controller
     {
         try {
             $params = $request->all();
-            // $testData = Category::translatedIn('en')->latest()->paginate(1);
-            // dd($testData);
             $lists = $this->cateRepo->getAllCategories($params);
             $results = array(
                 'success' => true,
@@ -64,7 +62,7 @@ class CategoryController extends Controller
     public function create(Request $request)
     {
         try {
-            $param = $request->all();  
+            $param = $request->all();
             $params = $param['vi'];
             $params['icon'] = $param['icon'];
             $data = $this->cateRepo->create($params);           
@@ -79,7 +77,6 @@ class CategoryController extends Controller
             
         } catch (\Throwable $th) {
             $results = array(
-                //'message' => $this->msg->createError(),
                 'message' => $th->getMessage(),
                 'success' => false,
                 'status' => Response::HTTP_OK
@@ -89,7 +86,7 @@ class CategoryController extends Controller
     }
 
     public function update(Request $request, $id)
-    {       
+    {
         try {
             $params = $request->all();           
             $data = $this->cateRepo->update($id, $params);
@@ -114,7 +111,7 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         try {           
-            $this->cateRepo->delete($id);
+            $this->cateRepo->destroy($id);
             $results = array(
                 'success' => true,
                 'message' => $this->msg->deleteSuccess(),

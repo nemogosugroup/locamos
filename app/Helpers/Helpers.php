@@ -53,4 +53,65 @@ class Helpers {
         return ($slugCount > 0) ? "{$slug}-{$slugCount}" : $slug;
     }
 
+    public function convertArrayByLocale(array $data, string $locale): array
+    {
+        foreach ($data as $idx => $item) {
+            // category
+            $category = $item['category'];
+            unset($data[$idx]['category']['translations']);
+            $newCategory = array_filter($category['translations'], function($cat) use ($locale) {
+                return $cat['locale'] === $locale;
+            });
+
+            // post
+            $postTrans = $item['translations'];
+            unset($data[$idx]['translations']);
+            $newPost = array_filter($postTrans, function($post) use ($locale) {
+                return $post['locale'] === $locale;
+            });
+
+            // merge
+            $newPost = reset($newPost);
+            $data[$idx]['title'] = $newPost['title'];
+            $data[$idx]['description'] = $newPost['description'];
+            $data[$idx]['content'] = $newPost['content'];
+
+            $newCategory = reset($newCategory);
+            $data[$idx]['category']['title'] = $newCategory['title'];
+        }
+
+        return $data;
+    }
+
+    public function convertSingleByLocale(array $data, string $locale): array
+    {
+        if (!empty($data)) {
+            // category
+            $category = $data['category'];
+            unset($data['category']['translations']);
+            $newCategory = array_filter($category['translations'], function($cat) use ($locale) {
+                return $cat['locale'] === $locale;
+            });
+
+            // post
+            $postTrans = $data['translations'];
+            unset($data['translations']);
+            $newPost = array_filter($postTrans, function($post) use ($locale) {
+                return $post['locale'] === $locale;
+            });
+
+            // merge
+            $newPost = reset($newPost);
+            $data['title'] = $newPost['title'];
+            $data['description'] = $newPost['description'];
+            $data['content'] = $newPost['content'];
+
+            $newCategory = reset($newCategory);
+            $data['category']['title'] = $newCategory['title'];
+
+        }
+
+        return $data;
+    }
+
 }

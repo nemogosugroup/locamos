@@ -14,4 +14,4 @@
 - php artisan serve
 
 ## License
-- cẩm nang hành trình GOSU
+- bản đồ các trạm GOSU

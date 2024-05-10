@@ -13,14 +13,11 @@ class Category extends Model implements TranslatableContract
     use Translatable;
     use HasFactory;
     protected $table = 'categories';
-    // protected $guarded = [''];
     public $translatedAttributes = ['title'];
     protected $fillable = [
         'slug', 'icon'
     ];
-    // protected $appends = [
-    //     'translations'
-    // ];
+
     protected static function boot() {
         parent::boot();
         static::creating(function ($category) {
@@ -29,13 +26,8 @@ class Category extends Model implements TranslatableContract
             $category->slug = ($slugCount > 0) ? "{$slug}-{$slugCount}" : $slug;;
         });
     }
-    public function postTranslations()
+    public function postTranslations(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany('App\Models\Post');
     }
-
-    // public function getTranslationsAttribute()
-    // {
-    //     return $this->translationsLanguage()->first();
-    // }
 }
