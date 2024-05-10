@@ -108,7 +108,7 @@
                             v-model="formData.feature_image"
                         >
                             <template #append>
-                                <el-button type="primary" @click="handerCkfinder"><i class="ri-upload-cloud-fill"></i>
+                                <el-button type="primary" @click="handleCkfinder"><i class="ri-upload-cloud-fill"></i>
                                 </el-button>
                             </template>
                         </el-input>
@@ -116,10 +116,24 @@
                 </el-col>
                 <el-col :span="24">
                     <el-form-item :label="`Images`">
+                        <el-col
+                            :span="6"
+                            class="el-image"
+                            v-show="imagesTmp.length > 0"
+                            v-for="(img, idx) in imagesTmp" :key="idx"
+                        >
+                            <img :src="img" alt="">
+                        </el-col>
                         <el-input
-                            :placeholder="`Images`"
+                            placeholder="Images"
                             v-model="formData.images"
-                        ></el-input>
+                        >
+                            <template #append>
+                                <el-button type="primary" @click="handleMultiCkfinder"><i
+                                    class="ri-upload-cloud-fill"></i>
+                                </el-button>
+                            </template>
+                        </el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -187,7 +201,7 @@ export default {
     data() {
         return {
             isLoading: true,
-            list: [],
+            imagesTmp: [],
             dialogVisible: false,
             isLoadingService: false,
             rules: {
@@ -228,6 +242,7 @@ export default {
     watch: {
         dialogFormVisible(newValue) {
             this.isShowDialog = newValue;
+            this.imagesTmp = this.formData.images;
         },
     },
     methods: {
@@ -296,17 +311,32 @@ export default {
             });
         },
 
-        //
-        handerCkfinder() {
+        handleCkfinder() {
             this.showCkfinder()
         },
 
         showCkfinder() {
             const _this = this
-            var finder = new CKFinder();
+            const finder = new CKFinder();
 
             finder.selectActionFunction = function (fileUrl, data) {
                 _this.formData.feature_image = fileUrl;
+            };
+            finder.popup();
+        },
+
+        handleMultiCkfinder() {
+            this.showMultiCkfinder();
+        },
+
+        showMultiCkfinder() {
+            const _this = this
+            const finder = new CKFinder();
+
+            finder.selectActionFunction = function (fileUrl, data) {
+                const imagesPath = localStorage.getItem('images_path');
+                _this.formData.images = imagesPath;
+                _this.imagesTmp = imagesPath.split(',');
             };
             finder.popup();
         },
@@ -323,6 +353,6 @@ export default {
     width: 100%;
     max-height: 500px;
     object-fit: cover;
-    margin: 10px;
+    border: 1px dotted red;
 }
 </style>

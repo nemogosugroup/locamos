@@ -78,7 +78,7 @@ class PostController extends Controller
             $params['lat'] = $param['lat'];
             $params['long'] = $param['long'];
             $params['feature_image'] = $param['feature_image'];
-            $params['images'] = $param['images'];
+            $params['images'] = json_encode(explode(',', $param['images']));
             $data = $this->repo->create($params);
             $data = $this->repo->createTranslation($param, $data->id);
             $results = array(
@@ -89,7 +89,7 @@ class PostController extends Controller
             );
             return response()->json($results);
             
-        } catch (\Throwable $th) {dd($th->getMessage());
+        } catch (\Throwable $th) {
             $results = array(
                 'message' => $this->msg->createError(),
                 'success' => false,
@@ -102,7 +102,8 @@ class PostController extends Controller
     public function update(Request $request, $id)
     {       
         try {
-            $params = $request->all();           
+            $params = $request->all();
+            $params['images'] = json_encode(explode(',', $params['images']));
             $data = $this->repo->update($id, $params);
             $results = array(
                 'success' => true,
