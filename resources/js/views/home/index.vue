@@ -42,7 +42,7 @@
 </template>
 <script>
 //import { mapGetters } from "vuex";
-import { dataDemo } from "./datademo";
+// import { dataDemo } from "./datademo";
 import Pagination from '@/components/Pagination'
 import RepositoryFactory from '@/utils/RepositoryFactory';
 const mapRepository = RepositoryFactory.get('map');
@@ -51,7 +51,7 @@ export default {
     components: { Pagination },
     data() {
         return {
-            listData: dataDemo(),
+            listData: [],
             listAlls: [],
             total: 30,
             listQuery: {
