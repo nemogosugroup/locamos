@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Category;
 
 class CategoryTranslation extends Model
 {
@@ -14,7 +13,7 @@ class CategoryTranslation extends Model
         'category_id', 'title', 'locale'
     ];
 
-    public function category()
+    public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
     }

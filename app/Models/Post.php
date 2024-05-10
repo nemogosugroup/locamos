@@ -2,23 +2,25 @@
 
 namespace App\Models;
 
+use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class Post extends Model
 {
+    use Translatable;
     use HasFactory;
     protected $table = 'posts';
+    public $translatedAttributes = ['title', 'description', 'content'];
     protected $fillable = [
-        'title', 
-        'slug', 
+        'slug',
         'category_id',
         'manager',
         'lat',
         'long',
-        'description',
-        'content',
+        'feature_image',
+        'images',
     ];
     protected static function boot() {
         parent::boot();
@@ -28,7 +30,7 @@ class Post extends Model
             $post->slug = ($slugCount > 0) ? "{$slug}-{$slugCount}" : $slug;;
         });
     }
-    public function category()
+    public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo('App\Models\Category');
     }

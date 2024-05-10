@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Api;
 use App\Http\Controllers\Controller;
+use App\Models\PostTranslation;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Repositories\Interfaces\Backend\PostRepositoryInterface;
@@ -9,7 +10,6 @@ use App\Helpers\Message;
 use App\Helpers\Helpers;
 use App\Models\Post;
 use App\Models\Category;
-use App\Models\PostMeta;
 class PostController extends Controller
 {
     /**
@@ -24,8 +24,8 @@ class PostController extends Controller
         Message $message, 
         Helpers $helper, 
         Category $modelCategory, 
-        Post $model
-        //PostMeta $postMeta 
+        Post $model,
+        PostTranslation $modelTranslation
     )
     {
         $this->repo = $repo;
@@ -33,7 +33,7 @@ class PostController extends Controller
         $this->helper = $helper;
         $this->repo->addModel($model);
         $this->repo->setModelCategory($modelCategory);
-        //$this->repo->setModelPostMeta($postMeta);
+        $this->repo->setModelTranslate($modelTranslation);
     }
 
     public function index(Request $request)
@@ -72,19 +72,24 @@ class PostController extends Controller
     {
         try {
             $param = $request->all();
-            $model = new Post();
-            $param['slug'] = $this->helper->getSlug($param['title'], $model);
-            $data = $this->repo->create($param);
-            $result = $this->repo->getPostById($data->id);
+            $params = $param['vi'];
+            $params['category_id'] = $param['category_id'];
+            $params['manager'] = $param['manager'];
+            $params['lat'] = $param['lat'];
+            $params['long'] = $param['long'];
+            $params['feature_image'] = $param['feature_image'];
+            $params['images'] = $param['images'];
+            $data = $this->repo->create($params);
+            $data = $this->repo->createTranslation($param, $data->id);
             $results = array(
                 'success' => true,
-                'data' => $result,
+                'data' => $data,
                 'message' => $this->msg->createSuccess(),
                 'status' => Response::HTTP_OK
             );
             return response()->json($results);
             
-        } catch (\Throwable $th) {
+        } catch (\Throwable $th) {dd($th->getMessage());
             $results = array(
                 'message' => $this->msg->createError(),
                 'success' => false,
@@ -99,10 +104,9 @@ class PostController extends Controller
         try {
             $params = $request->all();           
             $data = $this->repo->update($id, $params);
-            $result = $this->repo->getPostById($id);
             $results = array(
                 'success' => true,
-                'data' => $result,
+                'data' => $data,
                 'message' => $this->msg->updateSuccess(),
                 'status' => Response::HTTP_OK
             );
@@ -121,7 +125,7 @@ class PostController extends Controller
     public function destroy($id)
     {
         try {           
-            $this->repo->delete($id);
+            $this->repo->destroy($id);
             $results = array(
                 'success' => true,
                 'message' => $this->msg->deleteSuccess(),

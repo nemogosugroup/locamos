@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\RoleController;
+use App\Http\Controllers\Api\MapController;
 use Illuminate\Support\Facades\App;
 
 /*
@@ -55,4 +56,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['prefix' => 'role'], function () {
         Route::get('list', [RoleController::class, 'list']);
     });
+});
+
+Route::group(['prefix' => 'map'], function () {
+    Route::get('all', [MapController::class, 'getAll']);
+    Route::get('list', [MapController::class, 'getList']);
+    Route::get('{id}', [MapController::class, 'getDetail']);
 });

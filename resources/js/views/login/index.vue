@@ -167,10 +167,7 @@ export default {
                                     window.location.href = this.redirectUri+'?token='+getAccessToken()+'&state='+this.oAuthState;
                                 }else{
                                     //console.log("check this.redirect",this.redirect);
-                                    this.$router.push({
-                                        path: this.redirect || "/",
-                                        query: this.otherQuery,
-                                    });
+                                    window.location.href = "/admin/post/post";
                                 }
                                 
                                 

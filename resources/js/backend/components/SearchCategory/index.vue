@@ -1,14 +1,6 @@
 <template>
     <div class="filter-container f-left">
         <el-input placeholder="Tiêu đề" v-model="title" style="width: 400px;" class="filter-item"/>
-        <el-select v-model="category_id" placeholder="Danh mục" style="width: 200px; margin-right: 12px" class="filter-item">
-            <el-option
-                v-for="item in listCategories"
-                :key="item.id"
-                :label="item.title"
-                :value="item.id"
-            />
-        </el-select>
         <el-button class="filter-item" type="primary" @click="handleSearch">
             <el-icon class="el-icon--left"><Search /></el-icon>Tìm kiếm
         </el-button>
@@ -22,15 +14,11 @@
 </template>
 <script>
     export default {
-        name: 'SearchPost',
+        name: 'SearchCategory',
         props: {
             titleFilter: {
                 type: String,
                 default: ''
-            },
-            listCategories: {
-                type: Array,
-                default: []
             }
         },
         data () {       
@@ -57,14 +45,13 @@
                 let data = { 'status': status }
                 this.$emit('showdialog', data)
             },
-            handleSearch(data){
+            handleSearch(data) {
                 if (!data) {
                     this.title = '';
                     this.category_id = '';
                 }
                 this.$emit('search', {
-                    title: this.title,
-                    category_id: this.category_id,
+                    title: this.title
                 })
             }
         }

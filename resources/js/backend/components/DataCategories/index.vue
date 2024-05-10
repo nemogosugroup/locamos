@@ -11,23 +11,30 @@
         v-bind:data="list"
     >
         <!-- Check All -->
-        <el-table-column
-            type="selection"
-            width="40"
-            align="center">
-        </el-table-column>           
+<!--        <el-table-column-->
+<!--            type="selection"-->
+<!--            width="40"-->
+<!--            align="center">-->
+<!--        </el-table-column>-->
+
         <!-- tiêu đề -->
         <el-table-column min-width="120px" label="Tiêu đề">
             <template v-slot="item">
-                <span>{{ item.row.title }}</span>
+                <div v-for="(lang, idx) in item.row.translations" :key="idx">
+                    <b>{{ lang.locale }} - </b><span>{{ lang.title }}</span><br>
+                </div>
             </template>
-        </el-table-column>  
-        <!-- tiêu đề -->
-        <el-table-column v-if="isShowCategory" min-width="120px" label="Danh mục">
+        </el-table-column>
+
+        <!-- icon -->
+        <el-table-column min-width="120px" label="Icon">
             <template v-slot="item">
-                <span>{{ item.row.category.title }}</span>
+                <div class="el-image">
+                    <img :src="item.row.icon" alt="">
+                </div>
             </template>
-        </el-table-column>  
+        </el-table-column>
+
         <!-- Action -->
         <el-table-column align="center" min-width="50px" label="Sửa">
             <template v-slot="item">
@@ -90,3 +97,12 @@
     }
 
 </script>
+<style lang="scss" scoped>
+.el-image > img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border: 1px dashed red;
+    margin: 10px;
+}
+</style>
