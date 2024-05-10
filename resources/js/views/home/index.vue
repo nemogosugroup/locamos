@@ -22,7 +22,7 @@
                                 <p>Latitude: {{ item.lat }}</p>
                                 <p>Longitude: {{ item.long }}</p>
                                 <div class="d-flex">
-                                    <el-button @click="hanldeMarker()" type="primary" plain><i
+                                    <el-button @click="hanldeMarker(item.id)" type="primary" plain><i
                                             class="ri-send-plane-fill"></i></el-button>
                                     <el-button class="button-more"><a href="#">{{ $t('readmore') }}</a></el-button>
                                 </div>
@@ -77,18 +77,19 @@ export default {
         //...mapGetters(["locale"]),
     },
     mounted() {
+        //this.initMap();
         this.emitter.on("change-locale", data => {
             this.markers = [],
-            this.map = null,
-            this.infowindow = null,
-            this.listQuery = {
-                page: 1,
-                limit: 20,
-                sort: 'desc',
-                title: '',
-                locale: this.$i18n.locale
-            },
-            this.fetch();
+                this.map = null,
+                this.infowindow = null,
+                this.listQuery = {
+                    page: 1,
+                    limit: 20,
+                    sort: 'desc',
+                    title: '',
+                    locale: this.$i18n.locale
+                },
+                this.fetch();
             Promise.resolve(this.fetchAll()).then(() => {
                 //this.initMap();
             }).catch(error => {
@@ -100,7 +101,7 @@ export default {
         this.emitter.off("change-locale");
         this.fetch();
         Promise.resolve(this.fetchAll()).then(() => {
-            //this.initMap();
+            this.initMap();
         }).catch(error => {
             console.error('Error fetching all data:', error);
         });
@@ -113,7 +114,7 @@ export default {
                 background: 'rgba(0, 0, 0, 0.7)'
             });
             this.listQuery.locale = this.$i18n.locale;
-            const {data} = await mapRepository.list(this.listQuery);
+            const { data } = await mapRepository.list(this.listQuery);
             loading.close();
             if (data.success) {
                 const results = data.data.data;
@@ -125,7 +126,7 @@ export default {
         },
         async fetchAll() {
             this.listQueryAll.locale = this.$i18n.locale;
-            const {data} = await mapRepository.all(this.listQueryAll);
+            const { data } = await mapRepository.all(this.listQueryAll);
             if (data.success) {
                 const results = data.data;
                 this.listAlls = results.map(item => {
@@ -143,7 +144,7 @@ export default {
                 }
             }
             return desc;
-        },        
+        },
         // google maker crui
         initMap() {
             /**
@@ -153,11 +154,9 @@ export default {
                 return item
             });
             var map;
-            this.infowindow = new google.maps.InfoWindow();            
+            this.infowindow = new google.maps.InfoWindow();
             var red_icon = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
-            var self = this;
 
-           
             var myOptions = {
                 // zoom: 10,
                 center: new google.maps.LatLng(31.87916, 35.32910),
@@ -170,49 +169,12 @@ export default {
              * Global marker object that holds all markers.
              * @type {Object.<string, google.maps.LatLng>}
              */
-            // var markers = [];
-            //var seft = this.markers;
-            /**
-             * Concatenates given lat and lng with an underscore and returns it.
-             * This id will be used as a key of marker to cache the marker in markers object.
-             * @param {!number} lat Latitude.
-             * @param {!number} lng Longitude.
-             * @return {string} Concatenated marker id.
-             */
-            var getMarkerUniqueId = function (lat, lng) {
-                return lat + '_' + lng;
-            };
-
-            /**
-             * Creates an instance of google.maps.LatLng by given lat and lng values and returns it.
-             * This function can be useful for getting new coordinates quickly.
-             * @param {!number} lat Latitude.
-             * @param {!number} lng Longitude.
-             * @return {google.maps.LatLng} An instance of google.maps.LatLng object
-             */
-            var getLatLng = function (lat, lng) {
-                return new google.maps.LatLng(lat, lng);
-            };
-
-
-            /**
-             * Binds right click event to given marker and invokes a callback function that will remove the marker from map.
-             * @param {!google.maps.Marker} marker A google.maps.Marker instance that the handler will binded.
-             */
-            var bindMarkerEvents = function (marker) {
-                google.maps.event.addListener(marker, "rightclick", function (point) {
-                    var markerId = getMarkerUniqueId(point.latLng.lat(), point.latLng.lng()); // get marker id by using clicked point's coordinate
-                    var marker = this.markers[markerId]; // find marker
-                    removeMarker(marker, markerId); // remove it
-                });
-            };
-
+            var markers = [];
 
             /**
              * loop through (Mysql) dynamic locations to add markers to map.
              */
             var i;
-            var confirmed = 0;
             var bounds = new google.maps.LatLngBounds();
 
             for (i = 0; i < locations.length; i++) {
@@ -248,24 +210,25 @@ export default {
                         this.infowindow.open(map, marker)
                     }
                 })(marker, i));
-                this.markers.push(marker);
+                markers.push(marker);
             }
             map.fitBounds(bounds);
             // Add a marker clusterer to manage the markers.
-            new MarkerClusterer(map, this.markers, {
+            new MarkerClusterer(map, markers, {
                 imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m",
             });
-            this.map = map
+            this.map = map;
+            this.markers = markers;
         },
-        hanldeMarker(){
-            let markerIndex = 17; // Chỉ số của marker bạn muốn pan đến
+        hanldeMarker(id) {
+            let markerIndex = this.listAlls.findIndex(item => item.id === id);// Chỉ số của marker bạn muốn pan đến;
             let marker = this.markers[markerIndex];
             if (marker) {
                 let markerPosition = marker.getPosition();
                 if (markerPosition) {
-                    google.maps.event.trigger(this.markers[17], 'click');
+                    google.maps.event.trigger(this.markers[markerIndex], 'click');
                     this.map.panTo(markerPosition);
-                    this.map.setZoom(9);
+                    this.map.setZoom(17);
                 } else {
                     console.error("Vị trí của marker không tồn tại.");
                 }
@@ -284,18 +247,19 @@ export default {
 </script>
 
 <style lang="scss">
-    .locale{
-        img {
-            width: 220px;
-            height: 150px;
-            object-fit: cover;
-        }
-        .info-locale {
-            h5 {
-                text-transform: capitalize;
-            }
+.locale {
+    img {
+        width: 220px;
+        height: 150px;
+        object-fit: cover;
+    }
+
+    .info-locale {
+        h5 {
+            text-transform: capitalize;
         }
     }
+}
 </style>
 
 <style lang="scss" scoped>
@@ -303,7 +267,7 @@ export default {
 
 #map {
     height: 100%;
-    
+
 }
 
 
@@ -315,6 +279,7 @@ body {
     margin: 0;
     padding: 0;
 }
+
 .search {
     width: calc(100% - 60px);
     margin: 30px 0 10px 40px;
