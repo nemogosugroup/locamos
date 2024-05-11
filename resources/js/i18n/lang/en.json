@@ -10,8 +10,13 @@
     "footer.phonehotline" : "1900.7189",
     "footer.registerno" : "Register No.: 0105992753",
     "home.title" : "Home",
-    "readmore" : "Reamore",
+    "readmore" : "Readmore",
+    "name" : "Name",
+    "value" : "Value",
     "title" : "Title",
     "search" : "Search address",
-    "manager" : "Manager"
+    "manager" : "Manager",
+    "address" : "Address",
+    "lat" : "Latitude",
+    "lng" : "Longitude"
 }

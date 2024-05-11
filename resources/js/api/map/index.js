@@ -5,7 +5,6 @@ const resource = "/map";
 export default {
     
     list(query){
-        console.log('query', query)
         return request({
             url: `${resource}` + "/list",
             method: 'get',
@@ -21,7 +20,7 @@ export default {
     },
     store(query){
         return request({
-            url: `${resource}` + "/{id}",
+            url: `${resource}`+`/${query.id}`,
             method: 'get',
             params: query
         })

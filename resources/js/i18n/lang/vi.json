@@ -13,5 +13,10 @@
    "readmore" : "Xem chi tiết",
    "title" : "Tiêu đề",
    "search" : "Tìm kiếm địa điểm",
-   "manager" : "Chủ sở hữu"
+   "name" : "Tên",
+   "value" : "Giá trị",
+   "manager" : "Chủ sở hữu",
+   "address" : "Địa chỉ",
+   "lat" : "Latitude",
+   "lng" : "Longitude"
 }

@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Login from "@/views/login";
 import Dashboard from "@/views/dashboard";
 import Home from "@/views/home";
+import DetailMap from "@/views/map";
 import Redirect from "@/views/redirect";
 import Page404 from "@/views/error-page/404";
 import Page401 from "@/views/error-page/401";
@@ -73,6 +74,24 @@ export const constantRoutes = [
                     icon: "ri-home-4-fill",
                     affix: true,
                 },
+            },
+        ],
+    },
+    {
+        path: "/map",
+        component: layoutFront,
+        hidden: true,
+        redirect: "/map/:id(\\d+)",
+        children: [
+            {
+                path: "/map/:id(\\d+)",
+                component: DetailMap,
+                name: "DetailMap",
+                meta: {
+                    title: "Gosu",
+                    noCache: true,
+                },
+                hidden: true,
             },
         ],
     },
