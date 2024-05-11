@@ -7410,8 +7410,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
                             let arrayImages = [];
                             A.jN.hF.files.forEach((item) => {
                                 if (item.dM.$.classList.value.includes('selected')) {
-                                    // change path to file if separate folders
-                                    arrayImages.push(`/static/uploads/${item.dM.$.title}`);
+                                    arrayImages.push(item.getUrl());
                                 }
                             });
                             localStorage.setItem('images_path', arrayImages);
