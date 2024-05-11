@@ -22,41 +22,96 @@
                                 <p>Latitude: {{ item.lat }}</p>
                                 <p>Longitude: {{ item.long }}</p>
                                 <div class="d-flex">
-                                    <el-button @click="hanldeMarker(item.id)" type="primary" plain><i
-                                            class="ri-send-plane-fill"></i></el-button>
-                                    <el-button class="button-more"><a href="#">{{ $t('readmore') }}</a></el-button>
+                                    <el-button @click="hanldeButtonClick(item)" type="primary" plain>
+                                        <i class="ri-send-plane-fill"></i>
+                                    </el-button>                                            
+                                    <el-button class="button-more">
+                                        <router-link
+                                            :to="'/map/' + item.id"
+                                            >
+                                                <span>{{ $t('readmore') }}</span>
+                                        </router-link>
+                                    </el-button>
                                 </div>
                             </div>
                         </div>
                     </el-scrollbar>
-                    <pagination v-show="total > 20" v-bind:total="total" v-model:page="listQuery.page"
+                    <pagination v-show="total > 10" v-bind:total="total" v-model:page="listQuery.page"
                         v-model:limit="listQuery.limit" layout="prev, pager, next" @pagination="fetch" />
                 </div>
             </div>
         </el-col>
         <el-col :span="16">
-            <div id="map"></div>
+            <!-- <div id="map"></div>api-key="AIzaSyAS8pvTzC3TNIQI0t30crTalS0L8F1ST28" -->
+            <GoogleMap
+                :api-key="GOOGLE_MAP_KEY"
+                style="width: 100%; height: 100%"
+                :center="center"
+                :mapTypeId="`roadmap`"
+                :gestureHandling="`greedy`" 
+                :zoom="zoom"
+                @zoom_changed="handleChangeZoom"
+                ref="mapRef"
+            >
+                <MarkerCluster>
+                    <Marker
+                        v-for="(location, i) in listAlls"
+                        :key="i"
+                        :options="{ position: { lat: parseFloat(location.lat), lng: parseFloat(location.lng) } }"
+                        @click="handleMarkerClick(location)"
+                        ref="markers"
+                    >     
+                        <InfoWindow v-model="infoWindowVisible[i]">
+                            <div class='locale'>
+                                <div class='images'>
+                                    <img :src="location.feature_image" :alt="location.title">
+                                </div>
+                                <div class='info-locale'>
+                                    <h5>{{ location.title }}</h5>
+                                    <p class="name"><strong>{{ $t('manager') }}: </strong>{{ location.manager }}</p>
+                                    <p>Latitude: {{ location.lat }}</p>
+                                    <p>Longitude: {{ location.lng }}</p>
+                                    <div class="d-flex">
+                                        <el-button class="button-more">
+                                            <router-link
+                                                :to="'/map/' + location.id"
+                                                >
+                                                <span>{{ $t('readmore') }}</span>
+                                            </router-link>
+                                        </el-button>
+                                    </div>
+                                </div>
+                            </div>
+                        </InfoWindow>                   
+                    </Marker>
+                </MarkerCluster>
+            </GoogleMap>
         </el-col>
     </el-row>
 
 </template>
 <script>
-//import { mapGetters } from "vuex";
-// import { dataDemo } from "./datademo";
+import { ref } from 'vue'
 import Pagination from '@/components/Pagination'
 import RepositoryFactory from '@/utils/RepositoryFactory';
 const mapRepository = RepositoryFactory.get('map');
-import { ElLoading } from 'element-plus'
+import { ElLoading } from 'element-plus';
+
+import { GoogleMap, Marker, MarkerCluster, InfoWindow } from 'vue3-google-map'
 export default {
-    components: { Pagination },
+    name: 'Home',
+    components: { Pagination, GoogleMap, Marker, MarkerCluster, InfoWindow },
     data() {
         return {
+            center:{ lat: -28.024, lng: 140.887 },
             listData: [],
             listAlls: [],
-            total: 30,
+            total: 0,
+            zoom: 4,
+            mapZoom: 12,
             listQuery: {
                 page: 1,
-                limit: 20,
+                limit: 10,
                 sort: 'desc',
                 title: '',
                 locale: this.$i18n.locale
@@ -67,47 +122,38 @@ export default {
                 locale: this.$i18n.locale
             },
             total: 0,
-            markers: [],
-            map: null,
-            infowindow: null,
-            isLoading: true,
+            infoWindowVisible:[]
         }
     },
     computed: {
-        //...mapGetters(["locale"]),
     },
-    mounted() {
-        //this.initMap();
+    mounted() {       
         this.emitter.on("change-locale", data => {
             this.markers = [],
-                this.map = null,
-                this.infowindow = null,
-                this.listQuery = {
-                    page: 1,
-                    limit: 20,
-                    sort: 'desc',
-                    title: '',
-                    locale: this.$i18n.locale
-                },
-                this.fetch();
-            Promise.resolve(this.fetchAll()).then(() => {
-                //this.initMap();
-            }).catch(error => {
-                console.error('Error fetching all data:', error);
-            });
+            this.map = null,
+            this.infowindow = null,
+            this.listQuery = {
+                page: 1,
+                limit: 20,
+                sort: 'desc',
+                title: '',
+                locale: this.$i18n.locale
+            },
+            this.fetch();
+            this.fetchAll();
         });
     },
     created() {
         this.emitter.off("change-locale");
         this.fetch();
-        Promise.resolve(this.fetchAll()).then(() => {
-            this.initMap();
-        }).catch(error => {
-            console.error('Error fetching all data:', error);
-        });
+        this.fetchAll(); 
+           
     },
 
     methods: {
+        handleChangeZoom() {
+            this.zoom = this.$refs.mapRef.map.zoom;
+        },
         async fetch() {
             const loading = ElLoading.service({
                 lock: true,
@@ -129,7 +175,7 @@ export default {
             const { data } = await mapRepository.all(this.listQueryAll);
             if (data.success) {
                 const results = data.data;
-                this.listAlls = results.map(item => {
+                this.listAlls = results.map((item, index) => {
                     return item
                 });
             }
@@ -145,96 +191,19 @@ export default {
             }
             return desc;
         },
-        // google maker crui
-        initMap() {
-            /**
-             * Create new map
-             */
-            var locations = this.listAlls.map(item => {
-                return item
-            });
-            var map;
-            this.infowindow = new google.maps.InfoWindow();
-            var red_icon = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
-
-            var myOptions = {
-                // zoom: 10,
-                center: new google.maps.LatLng(31.87916, 35.32910),
-                mapTypeId: 'roadmap',
-                gestureHandling: 'greedy'
-            };
-            map = new google.maps.Map(document.getElementById('map'), myOptions);
-
-            /**
-             * Global marker object that holds all markers.
-             * @type {Object.<string, google.maps.LatLng>}
-             */
-            var markers = [];
-
-            /**
-             * loop through (Mysql) dynamic locations to add markers to map.
-             */
-            var i;
-            var bounds = new google.maps.LatLngBounds();
-
-            for (i = 0; i < locations.length; i++) {
-                var marker = new google.maps.Marker({
-                    //position: new google.maps.LatLng(locations[i][1], locations[i][2]),
-                    position: new google.maps.LatLng(locations[i]['lat'], locations[i]['long']),
-                    map: map,
-                    // icon: locations[i][4] === '1' ? red_icon : purple_icon,
-                    html: `<div class='locale' id='window_loc'>
-                            <div class='images'>
-                                <img src="${locations[i]['feature_image']}" alt="${locations[i]['title']}">
-                            </div>
-                            <div class='info-locale'>
-                                <h5>${locations[i]['title']}</h5>
-                                <p class="name"><strong>${this.$i18n.t('manager')}: </strong>${locations[i]['manager']}</p>
-                                <p>Latitude: ${locations[i]['lat']}</p>
-                                <p>Longitude: ${locations[i]['long']}</p>
-                                <div class="d-flex">
-                                    <el-button class="button-more"><a href="#">${this.$i18n.t('readmore')}</a></el-button>
-                                </div>
-                            </div>
-                        </div>`
-                });
-                bounds.extend(marker.getPosition());
-
-                google.maps.event.addListener(marker, 'click', (function (marker, i) {
-                    return function () {
-                        if (this.infowindow) {
-                            this.infowindow.close();
-                        }
-                        this.infowindow = new google.maps.InfoWindow();
-                        this.infowindow.setContent(marker.html);
-                        this.infowindow.open(map, marker)
-                    }
-                })(marker, i));
-                markers.push(marker);
-            }
-            map.fitBounds(bounds);
-            // Add a marker clusterer to manage the markers.
-            new MarkerClusterer(map, markers, {
-                imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m",
-            });
-            this.map = map;
-            this.markers = markers;
+        hanldeButtonClick(location) {
+            let markerIndex = this.listAlls.findIndex(item => item.id === location.id);// Chỉ số của marker bạn muốn pan đến;
+            this.infoWindowVisible = [];
+            if (markerIndex !== -1) {
+                this.handleMarkerClick(location);
+            } 
         },
-        hanldeMarker(id) {
-            let markerIndex = this.listAlls.findIndex(item => item.id === id);// Chỉ số của marker bạn muốn pan đến;
-            let marker = this.markers[markerIndex];
-            if (marker) {
-                let markerPosition = marker.getPosition();
-                if (markerPosition) {
-                    google.maps.event.trigger(this.markers[markerIndex], 'click');
-                    this.map.panTo(markerPosition);
-                    this.map.setZoom(17);
-                } else {
-                    console.error("Vị trí của marker không tồn tại.");
-                }
-            } else {
-                console.error("Marker không tồn tại.");
-            }
+        handleMarkerClick(location){ 
+            this.infoWindowVisible = []         
+            this.center = { lat: parseFloat(location['lat']), lng: parseFloat(location['lng'])};
+            this.zoom = 17;
+            const index = this.listAlls.findIndex(loc => loc.id === location.id);
+            this.infoWindowVisible[index] = true;
         },
         //search
         handleSearch(data) {
@@ -242,11 +211,18 @@ export default {
             this.listQuery.limit = 20;
             this.fetch();
         },
+        
     },
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import "~@style/variables.scss";
+
+.search {
+    width: calc(100% - 60px);
+    margin: 30px 0 10px 40px;
+}
 .locale {
     img {
         width: 220px;
@@ -260,31 +236,6 @@ export default {
         }
     }
 }
-</style>
-
-<style lang="scss" scoped>
-@import "~@style/variables.scss";
-
-#map {
-    height: 100%;
-
-}
-
-
-/* Optional: Makes the sample page fill the window. */
-
-html,
-body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-.search {
-    width: calc(100% - 60px);
-    margin: 30px 0 10px 40px;
-}
-
 .wrap-listCard {
 
     // padding: 0 30px;

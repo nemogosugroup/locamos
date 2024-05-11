@@ -22,6 +22,9 @@ class Post extends Model
         'feature_image',
         'images',
     ];
+    protected $appends = [
+        'lng'
+    ];
 
     protected static function boot() {
         parent::boot();
@@ -39,5 +42,10 @@ class Post extends Model
     public function getImagesAttribute(): ?array
     {
         return $this->attributes['images'] ? json_decode($this->attributes['images'], true) : [];
+    }
+
+    public function getLngAttribute()
+    {
+        return $this->attributes['long'];
     }
 }

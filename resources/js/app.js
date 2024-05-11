@@ -41,6 +41,8 @@ app.provide('$AdminRepositoryFactory', AdminRepositoryFactory);
 import VueFireworks from 'vue3-damp-fireworks';
 app.use(VueFireworks);
 
+const GOOGLE_MAP_KEY = process.env.MIX_GOOGLE_MAP_KEY;
+app.config.globalProperties.GOOGLE_MAP_KEY = GOOGLE_MAP_KEY;
 //use i18n
 app.use(i18n);
 
