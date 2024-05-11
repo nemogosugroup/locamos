@@ -95,9 +95,13 @@ export default {
         },
     },
     mounted() {
-        this.setThumbsSwiper
+        this.emitter.on("change-locale", data => {
+            const id = this.$route.params && this.$route.params.id;
+            this.fetch(id);
+        });
     },
     created() {
+        this.emitter.off("change-locale");
         const id = this.$route.params && this.$route.params.id;
         this.fetch(id);
     },
@@ -105,6 +109,7 @@ export default {
     methods: {
         async fetch(id) {
             this.listQuery.id = id;
+            this.listQuery.locale = this.$i18n.locale;
             const { data } = await mapRepository.store(this.listQuery);
             if (data.success) {
                 this.detailData = data.data
