@@ -103,7 +103,7 @@ class PostController extends Controller
     {       
         try {
             $params = $request->all();
-            $params['images'] = json_encode(explode(',', $params['images']));
+            $params['images'] = json_encode($params['images']);
             $data = $this->repo->update($id, $params);
             $results = array(
                 'success' => true,
