@@ -95,9 +95,13 @@ export default {
         },
     },
     mounted() {
-        this.setThumbsSwiper
+        this.emitter.on("change-locale", data => {
+            const id = this.$route.params && this.$route.params.id;
+            this.fetch(id);
+        });
     },
     created() {
+        this.emitter.off("change-locale");
         const id = this.$route.params && this.$route.params.id;
         this.fetch(id);
     },
