@@ -42,7 +42,6 @@
             </div>
         </el-col>
         <el-col :span="16">
-            <!-- <div id="map"></div>api-key="AIzaSyAS8pvTzC3TNIQI0t30crTalS0L8F1ST28" -->
             <GoogleMap
                 :api-key="GOOGLE_MAP_KEY"
                 style="width: 100%; height: 100%"
