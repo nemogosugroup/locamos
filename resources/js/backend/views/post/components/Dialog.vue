@@ -257,6 +257,9 @@ export default {
                 if (valid) {
                     this.isLoadingSave = true;
                     if (this.dialogStatus === 'edit') {
+                        if (typeof this.formData.images === 'string') {
+                            this.formData.images = this.formData.images.split(',');
+                        }
                         const query = {
                             "data": this.formData,
                             "id": this.formData.id,
