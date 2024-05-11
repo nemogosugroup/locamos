@@ -109,6 +109,7 @@ export default {
     methods: {
         async fetch(id) {
             this.listQuery.id = id;
+            this.listQuery.locale = this.$i18n.locale;
             const { data } = await mapRepository.store(this.listQuery);
             if (data.success) {
                 this.detailData = data.data
