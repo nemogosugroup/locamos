@@ -124,7 +124,8 @@ export default {
     components: { Pagination, GoogleMap, Marker, MarkerCluster, InfoWindow },
     data() {
         return {
-            center:{ lat: -28.024, lng: 140.887 },
+            // center:{ lat: -28.024, lng: 140.887 },
+            center:{ lat: 15.9030623, lng: 105.8066925 },
             listData: [],
             listAlls: [],
             total: 0,
