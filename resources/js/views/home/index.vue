@@ -42,7 +42,8 @@
             </div>
         </el-col>
         <el-col :span="16">
-            <GoogleMap
+            <!--  -->
+            <GoogleMap                
                 :api-key="GOOGLE_MAP_KEY"
                 style="width: 100%; height: 100%"
                 :center="center"
@@ -56,7 +57,28 @@
                     <Marker
                         v-for="(location, i) in listAlls"
                         :key="i"
-                        :options="{ position: { lat: parseFloat(location.lat), lng: parseFloat(location.lng) } }"
+                        :options="{ position: { 
+                            lat: parseFloat(location.lat), lng: parseFloat(location.lng) }, 
+                            label: {
+                                text: setIcon(location.category.id), 
+                                fontFamily: 'Material Icons',
+                                color: setColorIcon(location.category.id),
+                                fontSize: '16px',
+                                //fillColor: '#ed9534'
+                                className: 'marker-position',
+                            },
+                            icon: {
+                                //url: location.category.icon,
+                                path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z',
+                               // anchor: { x: 35, y: 35 },
+                                //scaledSize: { height: 40, width: 40 },
+                                fillColor: setColor(location.category.id),
+                                fillOpacity: 1,
+                                strokeWeight: 0,
+                                rotation: 0,
+                                scale: 1.2,
+                            } 
+                        }"
                         @click="handleMarkerClick(location)"
                         ref="markers"
                     >     
@@ -177,6 +199,7 @@ export default {
                 this.listAlls = results.map((item, index) => {
                     return item
                 });
+                console.log('this.listAlls', this.listAlls);
             }
         },
         excerpt(desc, number) {
@@ -210,11 +233,26 @@ export default {
             this.listQuery.limit = 20;
             this.fetch();
         },
-        
+        //icon
+        setIcon(id) {
+            return id == 1 ? "\uea0b" : (id==2 ? "\ue546" : "\ue558");
+        },
+        setColorIcon(id){
+            return id == 2 ? "orange" : "white";
+        },
+        setColor(id){
+            return id == 1 ? "green" : (id==2 ? "blue" : "orange");
+        }
     },
 }
 </script>
-
+<style>
+.marker-position {
+    bottom: 35px;
+    left: 0;
+    position: relative;
+}
+</style>
 <style lang="scss" scoped>
 @import "~@style/variables.scss";
 
