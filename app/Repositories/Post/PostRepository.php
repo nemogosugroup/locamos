@@ -79,7 +79,7 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
             $model->where('category_id', $params['category_id']);
         }
         $data = $model->with(['category' => function ($query) {
-            $query->select('id');
+            $query->select('id', 'icon');
         }])->latest()->get();
 
         return $data->toArray();
@@ -98,7 +98,7 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
             $model->where('category_id', $params['category_id']);
         }
         $data = $model->with(['category' => function ($query) {
-            $query->select('id');
+            $query->select('id', 'icon');
         }])->latest()->paginate($params['limit']);
 
         return $data->toArray();
