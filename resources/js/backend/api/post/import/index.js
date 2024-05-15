@@ -18,7 +18,7 @@ export default {
     },
     delete(id) {
         return request({
-            url: `${resource}` + "/delete/"+`${id}`,
+            url: `${resource}` + "/delete/" + `${id}`,
             method: 'post'
         })
     },
