@@ -8,20 +8,25 @@ const postRouter = {
     name: 'Post',
     meta: {
         title: 'Post',
-        icon: 'ri-git-repository-fill'
+        icon: 'ri-git-repository-fill',
+        roles: ['admin']
     },
     children: [
         {
             path: 'category',
             component: Category,
             name: 'Category',
-            meta: { title: 'Danh mục', icon: 'ri-layout-grid-fill'}
+            meta: { 
+                title: 'Danh mục', 
+                icon: 'ri-layout-grid-fill',
+                roles: ['admin']
+            }
         },
         {
             path: 'post',
             component: Post,
             name: 'Course',
-            meta: { title: 'Post', icon: 'ri-git-repository-fill' }
+            meta: { title: 'Post', icon: 'ri-git-repository-fill', roles: ['admin'] }
         }
     ]
 }

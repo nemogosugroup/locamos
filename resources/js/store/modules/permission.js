@@ -69,8 +69,10 @@ const actions = {
     return new Promise(resolve => {
       let accessedRoutes = [];
       accessedRoutes = mergeRoute(accessedRoutes, asyncRoutes, 'path');
-      if (roles.includes('admin')) {  
-        accessedRoutes = mergeRoute(accessedRoutes, adminRoute, 'path');
+      if(roles){
+        if (roles.includes('admin')) {  
+          accessedRoutes = mergeRoute(accessedRoutes, adminRoute, 'path');
+        }
       }      
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)

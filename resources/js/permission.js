@@ -55,7 +55,18 @@ router.beforeEach(async (to, from, next) => {
         }
     } else {
         /* has no token*/
-
+        // accessRoutes.forEach(route => {
+        //     router.addRoute(route);
+        // });
+        const accessRoutes = await store.dispatch(
+            "permission/generateRoutes",
+            null
+        );
+        accessRoutes.forEach(route => {
+            router.addRoute(route);
+        });
+        console.log("accessRoutes", accessRoutes);
+        console.log('router', to);
         if (whiteList.indexOf(to.path) !== -1) {
             // in the free login whitelist, go directly
             next();
