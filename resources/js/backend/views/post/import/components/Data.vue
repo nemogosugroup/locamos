@@ -38,11 +38,13 @@
         <!-- Action -->
         <el-table-column align="center" min-width="80px" label="Chi tiết">
             <template v-slot="item">
-                <span v-if="item.row.status === 1">
-                    <el-button type="primary" size="small" @click="showDetail(item.row.id)">Chi tiết</el-button>
-                    <el-button type="danger" size="small" @click="confirmRemoveAll(item.row.id)">Xoá tất cả ({{ item.row.items_count }})</el-button>
-                </span>
-                <el-button v-else type="warning" size="small" disabled>Đã xoá tất cả ({{ item.row.items_count }})</el-button>
+                <el-button v-if="item.row.status === 1" type="danger" size="small"
+                           @click="confirmRemoveAll(item.row.id)">
+                    Xoá tất cả ({{ item.row.items_count }})
+                </el-button>
+                <el-button v-else type="warning" size="small" disabled>
+                    Đã xoá tất cả ({{ item.row.items_count }})
+                </el-button>
             </template>
         </el-table-column>
     </el-table>
@@ -52,6 +54,7 @@
 </template>
 <script>
 import DialogRemove from './RemoveDialog.vue';
+
 export default {
     name: 'TableLog',
     components: {DialogRemove},
