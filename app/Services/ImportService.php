@@ -56,6 +56,11 @@ class ImportService
         unset($data[0]);
 
         if (count($data) == 0) {
+            $dataUpdateLog = [
+                'status' => IMPORT_STATUS['FAIL'],
+            ];
+            $this->importRepo->update($importLog->id, $dataUpdateLog);
+
             return [
                 'success' => false,
                 'message' => "Dữ liệu rỗng"
@@ -99,7 +104,7 @@ class ImportService
         if (count($dataPost) == 0) {
             $dataUpdateLog = [
                 'status' => IMPORT_STATUS['FAIL'],
-                'quantity' => $count
+                'items_count' => $count
             ];
             $this->importRepo->update($importLog->id, $dataUpdateLog);
             return [

@@ -14,9 +14,7 @@ class ChangeTextDataTypeInPostTranslateTable extends Migration
     public function up()
     {
         Schema::table('post_translate', function (Blueprint $table) {
-            Schema::table('post_translate', function (Blueprint $table) {
-                $table->text('title')->change();
-            });
+            $table->text('title')->change();
         });
     }
 
