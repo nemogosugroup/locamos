@@ -51,7 +51,7 @@
     <dialog-remove></dialog-remove>
 </template>
 <script>
-import DialogRemove from './removeDialog.vue';
+import DialogRemove from './RemoveDialog.vue';
 export default {
     name: 'TableLog',
     components: {DialogRemove},
