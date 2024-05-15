@@ -11,5 +11,6 @@ interface BaseCategoryRepositoryInterface extends RepositoryInterface
     public function getCategoriesParents();
     public function setModelTranslate($modelTranslate);
     public function createTranslation(array $params, int $category_id );
+    public function getDetailById(int $id);
     public function destroy(int $id);
 }

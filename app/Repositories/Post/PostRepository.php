@@ -145,4 +145,23 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
             ->where('id', $id)
             ->delete();
     }
+
+    public function deleteByImportLogId(int $importId)
+    {
+        $this->model->query()
+            ->where('import_log_id', $importId)
+            ->each(function ($item) {
+                $this->destroy($item->id);
+            });
+    }
+
+    public function checkLatLongExisted($lat, $long, $categoryId)
+    {
+        return $this->model->query()
+            ->where([
+                'category_id' => $categoryId,
+                'lat' => $lat,
+                'long' => $long,
+            ])->exists();
+    }
 }
