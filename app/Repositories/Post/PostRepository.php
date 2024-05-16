@@ -153,6 +153,11 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
             ->each(function ($item) {
                 $this->destroy($item->id);
             });
+        sleep(1);
+        $exists = $this->model->query()->where('import_log_id', $importId)->exists();
+        if ($exists) {
+            $this->deleteByImportLogId($importId);
+        }
     }
 
     public function checkLatLongExisted($lat, $long, $categoryId)
