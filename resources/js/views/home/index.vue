@@ -236,13 +236,13 @@ export default {
         },
         //icon
         setIcon(id) {
-            return id == 1 ? "\uea0b" : (id==2 ? "\ue546" : "\ue558");
+            return id == 1 ? "\ue558" : (id==2 ? "\ue546" : "\uea0b");
         },
         setColorIcon(id){
             return id == 2 ? "orange" : "white";
         },
         setColor(id){
-            return id == 1 ? "green" : (id==2 ? "blue" : "orange");
+            return id == 1 ? "orange" : (id==2 ? "blue" : "green");
         }
     },
 }
