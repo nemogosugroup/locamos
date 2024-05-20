@@ -70,7 +70,7 @@ export const constantRoutes = [
                 component: Home,
                 name: "Home",
                 meta: {
-                    title: "Gosu",
+                    title: "GOSU",
                     icon: "ri-home-4-fill",
                     affix: true,
                 },
@@ -88,7 +88,7 @@ export const constantRoutes = [
                 component: DetailMap,
                 name: "DetailMap",
                 meta: {
-                    title: "Gosu",
+                    title: "GOSU",
                     noCache: true,
                 },
                 hidden: true,
