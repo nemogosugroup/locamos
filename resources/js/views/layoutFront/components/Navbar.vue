@@ -4,6 +4,9 @@
 
         <div class="right-menu">
             <Locale></Locale>
+            <span :id="`btnFilterMobile`" class="btn_filter" @click="toggleFilterTab()">
+                <i class="ri-search-line"></i>
+            </span>
         </div>
     </div>
 </template>
@@ -22,6 +25,7 @@ export default {
     data(){
         return {
             bgNav: bgNav,
+            isShowFilter: false
         }
     },
     computed: {
@@ -37,6 +41,11 @@ export default {
             return `background-image: url(${bgNav})`;
         },
     },
+    mounted() {
+        this.emitter.on("is-toggle-filter-tab", () => {
+            this.toggleFilterTab();
+        });
+    },
     methods: {
         toggleSideBar() {
             this.$store.dispatch("app/toggleSideBar");
@@ -46,6 +55,22 @@ export default {
             //this.$router.push(`/login?redirect=${this.$route.fullPath}`);
             this.$router.push(`/login`);
         },
+        toggleFilterTab() {
+            this.isShowFilter = !this.isShowFilter;
+
+            const filterTab = document.getElementById('filterTab');
+            const filterTabShow = document.getElementById('filterTabShow');
+            const showingMap = document.getElementById('showingMap');
+            const showingMapShow = document.getElementById('showingMapShow');
+
+            if (this.isShowFilter) {
+                filterTab.setAttribute('id', 'filterTabShow');
+                showingMap.setAttribute('id', 'showingMapShow');
+            } else {
+                filterTabShow.setAttribute('id', 'filterTab');
+                showingMapShow.setAttribute('id', 'showingMap');
+            }
+        }
     },
 };
 </script>
@@ -113,6 +138,28 @@ export default {
                     top: 25px;
                     font-size: 12px;
                 }
+            }
+        }
+        .btn_filter {
+            color: #fff;
+            position: absolute;
+            font-size: 24px;
+            bottom: 1px;
+            right: 35px;
+        }
+    }
+}
+@media screen and (max-width: 1199px) {
+    .navbar {
+        height: 55px !important;
+    }
+}
+@media screen and (max-width: 600px) {
+    .navbar {
+        padding: 10px 50px 10px 10px;
+        .right-menu {
+            .btn_filter {
+                right: 15px;
             }
         }
     }
