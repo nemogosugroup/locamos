@@ -1,7 +1,7 @@
 <template>
     <div class="wrap-details" :style="background">
         <el-row justify="center">
-            <el-col :span="12">
+            <el-col :span="24" :lg="12">
                 <div class="map-detail">
                     <div class="wrap-slider">
                         <swiper
@@ -35,7 +35,7 @@
                     </div>
                     <div class="info">
                         <el-table :data="tableData" border style="width: 100%" class="table-info">
-                            <el-table-column align="center" prop="key" :label="$t('name')" width="230" />
+                            <el-table-column align="center" prop="key" :label="$t('name')" width="175" />
                             <el-table-column align="center" prop="value" :label="$t('value')" />
                         </el-table>
                     </div>
@@ -205,4 +205,62 @@ export default {
     }
 }
 
+@media screen and (max-width: 1024px) {
+    .wrap-details {
+        .map-detail {
+            padding: 0 20px;
+        }
+        .wrap-slider {
+            img {
+                object-fit: cover;
+                max-height: 500px;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .wrap-details {
+        .wrap-slider {
+            img {
+                max-height: 350px;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .wrap-details {
+        .info {
+            * {
+                font-size: 14px;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 414px) {
+    .wrap-details {
+        .wrap-slider {
+            img {
+                max-height: 300px;
+            }
+        }
+        .table-info {
+            :deep(td) {
+                padding: 5px;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .wrap-details {
+        .wrap-slider {
+            img {
+                max-height: 250px;
+            }
+        }
+    }
+}
 </style>
