@@ -109,4 +109,11 @@ export default {
 .mobile .fixed-header {
     width: 100%;
 }
+@media screen and (max-width: 1199px) {
+    .app-wrapper {
+        .wrapper-main {
+            padding-top: 55px;
+        }
+    }
+}
 </style>

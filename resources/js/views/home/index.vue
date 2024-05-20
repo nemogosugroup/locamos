@@ -1,6 +1,6 @@
 <template>
     <el-row>
-        <el-col :span="8">
+        <el-col :id="`filterTab`" :span="12" :xl="8">
             <div class="homeListMap">
                 <div class="search">
                     <el-input v-model="listQuery.title" size="large" :placeholder="$t('search')">
@@ -22,7 +22,7 @@
                                 <p>Latitude: {{ item.lat }}</p>
                                 <p>Longitude: {{ item.long }}</p>
                                 <div class="d-flex">
-                                    <el-button @click="hanldeButtonClick(item)" type="primary" plain>
+                                    <el-button @click="handleButtonClick(item)" type="primary" plain>
                                         <i class="ri-send-plane-fill"></i>
                                     </el-button>                                            
                                     <el-button class="button-more">
@@ -41,11 +41,11 @@
                 </div>
             </div>
         </el-col>
-        <el-col :span="16">
+        <el-col :id="`showingMap`" :span="12" :xl="16">
             <!--  -->
             <GoogleMap                
                 :api-key="GOOGLE_MAP_KEY"
-                style="width: 100%; height: 100%"
+                style="width: 100%; height: 100%;"
                 :center="center"
                 :mapTypeId="`roadmap`"
                 :gestureHandling="`greedy`" 
@@ -112,11 +112,11 @@
 
 </template>
 <script>
-import { ref } from 'vue'
 import Pagination from '@/components/Pagination'
 import RepositoryFactory from '@/utils/RepositoryFactory';
 const mapRepository = RepositoryFactory.get('map');
 import { ElLoading } from 'element-plus';
+import { mapState } from "vuex";
 
 import { GoogleMap, Marker, MarkerCluster, InfoWindow } from 'vue3-google-map'
 export default {
@@ -128,7 +128,6 @@ export default {
             center:{ lat: 15.9030623, lng: 105.8066925 },
             listData: [],
             listAlls: [],
-            total: 0,
             zoom: 4,
             mapZoom: 12,
             listQuery: {
@@ -147,9 +146,8 @@ export default {
             infoWindowVisible:[]
         }
     },
-    computed: {
-    },
-    mounted() {       
+    computed: {},
+    mounted() {
         this.emitter.on("change-locale", data => {
             this.markers = [],
             this.map = null,
@@ -167,9 +165,9 @@ export default {
     },
     created() {
         this.emitter.off("change-locale");
+        this.emitter.off("is-toggle-filter-tab");
         this.fetch();
         this.fetchAll(); 
-           
     },
 
     methods: {
@@ -214,12 +212,13 @@ export default {
             }
             return desc;
         },
-        hanldeButtonClick(location) {
+        handleButtonClick(location) {
             let markerIndex = this.listAlls.findIndex(item => item.id === location.id);// Chỉ số của marker bạn muốn pan đến;
             this.infoWindowVisible = [];
             if (markerIndex !== -1) {
                 this.handleMarkerClick(location);
-            } 
+            }
+            this.emitter.emit("is-toggle-filter-tab");
         },
         handleMarkerClick(location){ 
             this.infoWindowVisible = []         
@@ -353,5 +352,46 @@ export default {
 .pagination-container {
     margin: 0;
     padding: 20px 40px
+}
+
+@media screen and (max-width: 1199px) {
+    #filterTab {
+        display: none;
+    }
+    #filterTabShow {
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+    #showingMap {
+        width: 100% !important;
+        > div {
+            min-height: calc(100vh - 55px);
+            min-width: 100vw;
+        }
+    }
+    :deep(.el-scrollbar__view) {
+        grid-template-columns: repeat(3, 1fr);
+        margin: 0;
+    }
+
+    .wrap-listCard .card .info h6 {
+        min-height: 37px;
+    }
+    .search {
+        width: 95%;
+        margin: 1% 2.5%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    :deep(.el-scrollbar__view) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 480px) {
+    :deep(.el-scrollbar__view) {
+        grid-template-columns: repeat(1, 1fr);
+    }
 }
 </style>
