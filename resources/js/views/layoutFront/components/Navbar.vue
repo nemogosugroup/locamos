@@ -141,17 +141,21 @@ export default {
             }
         }
         .btn_filter {
-            color: #fff;
-            position: absolute;
-            font-size: 24px;
-            bottom: 1px;
-            right: 35px;
+            display: none;
         }
     }
 }
 @media screen and (max-width: 1199px) {
     .navbar {
         height: 55px !important;
+        .btn_filter {
+            display: block !important;
+            color: #fff;
+            position: absolute;
+            font-size: 24px;
+            bottom: 1px;
+            right: 35px;
+        }
     }
 }
 @media screen and (max-width: 600px) {
