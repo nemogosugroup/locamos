@@ -4,8 +4,10 @@
 
         <div class="right-menu">
             <Locale></Locale>
-            <span :id="`btnFilterMobile`" class="btn_filter" @click="toggleFilterTab()">
-                <i class="ri-search-line"></i>
+            <span v-if="$route.name === 'Home'">
+                <span id="btnFilterMobile" class="btn_filter" @click="toggleFilterTab()">
+                    <i class="ri-search-line"></i>
+                </span>
             </span>
         </div>
     </div>
@@ -45,6 +47,9 @@ export default {
         this.emitter.on("is-toggle-filter-tab", () => {
             this.toggleFilterTab();
         });
+        this.emitter.on("hide-filter-in-detail", () => {
+            this.toggleFilterTab(true);
+        });
     },
     methods: {
         toggleSideBar() {
@@ -55,8 +60,8 @@ export default {
             //this.$router.push(`/login?redirect=${this.$route.fullPath}`);
             this.$router.push(`/login`);
         },
-        toggleFilterTab() {
-            this.isShowFilter = !this.isShowFilter;
+        toggleFilterTab(fromDetail = false) {
+            this.isShowFilter = fromDetail ? false : !this.isShowFilter;
 
             const filterTab = document.getElementById('filterTab');
             const filterTabShow = document.getElementById('filterTabShow');
@@ -64,11 +69,11 @@ export default {
             const showingMapShow = document.getElementById('showingMapShow');
 
             if (this.isShowFilter) {
-                filterTab.setAttribute('id', 'filterTabShow');
-                showingMap.setAttribute('id', 'showingMapShow');
+                filterTab?.setAttribute('id', 'filterTabShow');
+                showingMap?.setAttribute('id', 'showingMapShow');
             } else {
-                filterTabShow.setAttribute('id', 'filterTab');
-                showingMapShow.setAttribute('id', 'showingMap');
+                filterTabShow?.setAttribute('id', 'filterTab');
+                showingMapShow?.setAttribute('id', 'showingMap');
             }
         }
     },

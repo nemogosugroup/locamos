@@ -165,7 +165,6 @@ export default {
     },
     created() {
         this.emitter.off("change-locale");
-        this.emitter.off("is-toggle-filter-tab");
         this.fetch();
         this.fetchAll(); 
     },
@@ -213,12 +212,12 @@ export default {
             return desc;
         },
         handleButtonClick(location) {
+            this.emitter.emit("is-toggle-filter-tab");
             let markerIndex = this.listAlls.findIndex(item => item.id === location.id);// Chỉ số của marker bạn muốn pan đến;
             this.infoWindowVisible = [];
             if (markerIndex !== -1) {
                 this.handleMarkerClick(location);
             }
-            this.emitter.emit("is-toggle-filter-tab");
         },
         handleMarkerClick(location){ 
             this.infoWindowVisible = []         

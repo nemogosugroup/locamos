@@ -108,6 +108,7 @@ export default {
 
     methods: {
         async fetch(id) {
+            this.emitter.emit('hide-filter-in-detail');
             this.listQuery.id = id;
             this.listQuery.locale = this.$i18n.locale;
             const { data } = await mapRepository.store(this.listQuery);
