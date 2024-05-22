@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'Cẩm nang hành trình',
+  title: 'Maps',
   // theme: variables.theme,
   /**
    * @type {boolean} true | false

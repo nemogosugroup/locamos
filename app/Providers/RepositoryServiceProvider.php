@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\Interfaces\Backend\ImportLogRepositoryInterface;
+use App\Repositories\ImportLog\ImportLogRepository;
 use App\Repositories\Post\PostRepository;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\User\UserRepository;
@@ -24,6 +26,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(BaseCategoryRepositoryInterface::class, BaseCategoryRepository::class);
         $this->app->bind(BasePostRepositoryInterface::class, BasePostRepository::class);
         $this->app->bind(PostRepositoryInterface::class, PostRepository::class);
+        $this->app->bind(ImportLogRepositoryInterface::class, ImportLogRepository::class);
     }
 
     /**

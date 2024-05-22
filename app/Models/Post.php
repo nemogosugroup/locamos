@@ -17,10 +17,12 @@ class Post extends Model
         'slug',
         'category_id',
         'manager',
+        'phone_number',
         'lat',
         'long',
         'feature_image',
         'images',
+        'import_log_id'
     ];
     protected $appends = [
         'lng'
@@ -37,6 +39,15 @@ class Post extends Model
     public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo('App\Models\Category');
+    }
+    public function log(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo('App\Models\ImportLog');
+    }
+
+    public function getFeatureImageAttribute(): string
+    {
+        return !empty($this->attributes['feature_image']) ? $this->attributes['feature_image'] : '/default/default_image.jpg';
     }
 
     public function getImagesAttribute(): ?array

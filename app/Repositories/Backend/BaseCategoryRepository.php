@@ -53,6 +53,11 @@ class BaseCategoryRepository extends BaseRepository implements BaseCategoryRepos
         return $this->modelTranslate->insert([$en]);
     }
 
+    public function getDetailById(int $id)
+    {
+        return $this->model->query()->find($id);
+    }
+
     public function destroy(int $id)
     {
         $this->modelTranslate->query()

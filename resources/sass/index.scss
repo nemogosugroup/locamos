@@ -267,3 +267,42 @@ aside {
         flex-direction: column;
     }
 }
+
+@media screen and (max-width: 1024px) {
+    .footer {
+        padding: 30px;
+        .main-footer {
+            > div {
+                display: block !important;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .footer {
+        text-align: center;
+        .main-footer {
+            display: block;
+            .logo-privacy {
+                width: 100%;
+            }
+            .privacy-info {
+                margin: 25px 0;
+            }
+            .contact-hotline {
+                .hotline-ft {
+                    &::before {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 484px) {
+    .pagination-container {
+        overflow-x: scroll;
+    }
+}

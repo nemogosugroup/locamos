@@ -19,4 +19,6 @@ interface PostRepositoryInterface extends RepositoryInterface
     public function setModelTranslate($modelTranslate);
     public function createTranslation(array $params, int $post_id);
     public function destroy(int $id);
+    public function deleteByImportLogId(int $importId);
+    public function checkLatLongExisted($lat, $long, int $categoryId);
 }
