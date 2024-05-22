@@ -10,6 +10,8 @@ use App\Helpers\Message;
 use App\Helpers\Helpers;
 use App\Models\Post;
 use App\Models\Category;
+use Illuminate\Support\Facades\Cache;
+
 class PostController extends Controller
 {
     /**
@@ -81,6 +83,7 @@ class PostController extends Controller
             $params['images'] = json_encode(explode(',', $param['images']));
             $data = $this->repo->create($params);
             $data = $this->repo->createTranslation($param, $data->id);
+            Cache::forget('all_post_public');
             $results = array(
                 'success' => true,
                 'data' => $data,
@@ -105,6 +108,7 @@ class PostController extends Controller
             $params = $request->all();
             $params['images'] = json_encode($params['images']);
             $data = $this->repo->update($id, $params);
+            Cache::forget('all_post_public');
             $results = array(
                 'success' => true,
                 'data' => $data,
@@ -127,6 +131,7 @@ class PostController extends Controller
     {
         try {           
             $this->repo->destroy($id);
+            Cache::forget('all_post_public');
             $results = array(
                 'success' => true,
                 'message' => $this->msg->deleteSuccess(),
