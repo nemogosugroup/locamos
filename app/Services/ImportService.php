@@ -9,6 +9,7 @@ use App\Repositories\Backend\BaseCategoryRepository;
 use App\Repositories\ImportLog\ImportLogRepository;
 use App\Repositories\Post\PostRepository;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ImportService
@@ -137,6 +138,8 @@ class ImportService
             ];
             $this->importRepo->update($importLog->id, $dataUpdateLog);
 
+            Cache::forget('all_post_public');
+
             return [
                 'success' => true,
                 'data' => $result,
@@ -149,5 +152,6 @@ class ImportService
     {
         $this->postRepo->deleteByImportLogId($id);
         $this->importRepo->update($id, ['status' => IMPORT_STATUS['DELETED']]);
+        Cache::forget('all_post_public');
     }
 }

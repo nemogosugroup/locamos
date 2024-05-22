@@ -5,6 +5,7 @@ namespace App\Repositories\Post;
 use App\Models\Post;
 use App\Repositories\BaseRepository;
 use App\Repositories\Interfaces\Backend\PostRepositoryInterface;
+use Illuminate\Support\Facades\Cache;
 
 class PostRepository extends BaseRepository implements PostRepositoryInterface
 {
@@ -69,20 +70,21 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
     // get all post
     public function getAllPublic(array $params)
     {
-        $model = $this->model->query();
-        ## Search by title ##
-        if (isset($params['title']) && $params['title'] != null) {
-            $model = Post::whereTranslationLike('title', '%' . $params['title'] . '%');
-        }
-        ## Search by category ##
-        if (isset($params['category_id']) && $params['category_id'] != null) {
-            $model->where('category_id', $params['category_id']);
-        }
-        $data = $model->with(['category' => function ($query) {
-            $query->select('id', 'icon');
-        }])->latest()->get();
+        $posts = Cache::get('all_post_public');
 
-        return $data->toArray();
+        if (isset($posts)) {
+            $result = unserialize($posts);
+        } else {
+            $model = $this->model->query();
+            $data = $model->with(['category' => function ($query) {
+                $query->select('id', 'icon');
+            }])->latest()->get();
+
+            Cache::put('all_post_public', serialize($data->toArray()), now()->addMonth());
+            $result = $data->toArray();
+        }
+
+        return $result;
     }
 
     // get all post
