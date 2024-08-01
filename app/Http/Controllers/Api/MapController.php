@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Helpers\Message;
 use App\Helpers\Helpers;
+use App\Models\Category;
 
 class MapController extends Controller
 {
@@ -19,15 +20,16 @@ class MapController extends Controller
 
     public function __construct(
         PostRepositoryInterface $postRepository,
-        Post                    $model,
-        Message                 $message,
-        Helpers                 $helpers
-    )
-    {
+        Post $model,
+        Message $message,
+        Helpers $helpers,
+        Category $category
+    ) {
         $this->postRepo = $postRepository;
         $this->msg = $message;
         $this->helpers = $helpers;
         $this->postRepo->addModel($model);
+        $this->postRepo->setModelCategory($category);
         $this->defaultLocale = 'vi';
     }
 
@@ -65,6 +67,8 @@ class MapController extends Controller
             $params['locale'] = $request->input('locale') ?? $this->defaultLocale;
             $data = $this->postRepo->getAllPost($params);
             $data['data'] = $this->helpers->convertArrayByLocale($data['data'], $params['locale']);
+            $categories = $this->postRepo->getCategories();
+            $data['categories'] = $this->helpers->convertArrayCategoriesByLocale($categories, $params['locale']);
             $results = array(
                 'success' => true,
                 'data' => $data,

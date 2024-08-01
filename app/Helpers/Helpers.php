@@ -1,19 +1,22 @@
-<?php 
+<?php
 namespace App\Helpers;
+
 use GuzzleHttp\Client;
 use Illuminate\Http\Response;
 use App\Helpers\Message;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-class Helpers {
+
+class Helpers
+{
     protected $msg;
     protected $modelUser;
-    protected $ldapHost;  
+    protected $ldapHost;
     public function __construct(
-        Message $message, 
+        Message $message,
         User $modelUser
-    ){
+    ) {
         $this->msg = $message;
         $this->ldapHost = env("LDAP_HOST", "222.255.168.250");
         $this->modelUser = $modelUser;
@@ -46,10 +49,11 @@ class Helpers {
 
         return false;
     }
-    
-    public function getSlug($title, $model) {
+
+    public function getSlug($title, $model)
+    {
         $slug = Str::slug($title);
-        $slugCount = count( $model->whereRaw("slug REGEXP '^{$slug}(-[0-9]*)?$'")->get() );
+        $slugCount = count($model->whereRaw("slug REGEXP '^{$slug}(-[0-9]*)?$'")->get());
         return ($slugCount > 0) ? "{$slug}-{$slugCount}" : $slug;
     }
 
@@ -59,14 +63,14 @@ class Helpers {
             // category
             $category = $item['category'];
             unset($data[$idx]['category']['translations']);
-            $newCategory = array_filter($category['translations'], function($cat) use ($locale) {
+            $newCategory = array_filter($category['translations'], function ($cat) use ($locale) {
                 return $cat['locale'] === $locale;
             });
 
             // post
             $postTrans = $item['translations'];
             unset($data[$idx]['translations']);
-            $newPost = array_filter($postTrans, function($post) use ($locale) {
+            $newPost = array_filter($postTrans, function ($post) use ($locale) {
                 return $post['locale'] === $locale;
             });
 
@@ -89,14 +93,14 @@ class Helpers {
             // category
             $category = $data['category'];
             unset($data['category']['translations']);
-            $newCategory = array_filter($category['translations'], function($cat) use ($locale) {
+            $newCategory = array_filter($category['translations'], function ($cat) use ($locale) {
                 return $cat['locale'] === $locale;
             });
 
             // post
             $postTrans = $data['translations'];
             unset($data['translations']);
-            $newPost = array_filter($postTrans, function($post) use ($locale) {
+            $newPost = array_filter($postTrans, function ($post) use ($locale) {
                 return $post['locale'] === $locale;
             });
 
@@ -113,5 +117,21 @@ class Helpers {
 
         return $data;
     }
-
+    public function convertArrayCategoriesByLocale(array $data, string $locale): array
+    {
+        foreach ($data as $idx => $item) {
+            // post
+            $cats = $item['translations'];
+            unset($data[$idx]['translations']);
+            $newCat = array_filter($cats, function ($cat) use ($locale) {
+                return $cat['locale'] === $locale;
+            });
+            // merge
+            $newCats = reset($newCat);
+            $data[$idx]['category_id'] = $newCats['category_id'];
+            $data[$idx]['title'] = $newCats['title'];
+            //dd($data[$idx]);
+        }
+        return $data;
+    }
 }
