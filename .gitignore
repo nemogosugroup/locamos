@@ -26,3 +26,5 @@ package-lock.json
 /resources/sass/*.css.map
 /public/build
 /public/mix-manifest.json
+.eslintrc.json
+.prettierrc.json
